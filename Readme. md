@@ -1,0 +1,61 @@
+#!/bin/bash
+# Usage: ./create_github_repos.sh <github-username>
+# Example: ./create_github_repos.sh rohitfukate
+
+USERNAME=$1
+
+if [ -z "$USERNAME" ]; then
+  echo "Error: Provide your GitHub username as argument."
+  exit 1
+fi
+
+# Check if gh CLI is installed
+if ! command -v gh &> /dev/null
+then
+    echo "GitHub CLI not found. Install from https://cli.github.com/"
+    exit 1
+fi
+
+# ===============================
+# Backend Repo
+# ===============================
+echo "Creating backend repository..."
+
+cd inventory-management-system/backend || exit
+
+git init
+git add .
+git commit -m "Initial backend commit"
+git branch -M main
+
+# Create public repo on GitHub
+gh repo create $USERNAME/inventory-backend --public --confirm
+
+# Add remote and push
+git remote add origin https://github.com/$USERNAME/inventory-backend.git
+git push -u origin main
+
+echo "✅ Backend repo created: https://github.com/$USERNAME/inventory-backend"
+
+# ===============================
+# Frontend Repo
+# ===============================
+echo "Creating frontend repository..."
+
+cd ../frontend || exit
+
+git init
+git add .
+git commit -m "Initial frontend commit"
+git branch -M main
+
+# Create public repo on GitHub
+gh repo create $USERNAME/inventory-frontend --public --confirm
+
+# Add remote and push
+git remote add origin https://github.com/$USERNAME/inventory-frontend.git
+git push -u origin main
+
+echo "✅ Frontend repo created: https://github.com/$USERNAME/inventory-frontend"
+
+echo "All done! Both repos are live and public."
